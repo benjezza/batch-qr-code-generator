@@ -1,13 +1,14 @@
-version: '3.8'
+version: "3.9"
 
 services:
-    qr-code-generator:
-        container_name: qr-code-generator
-        image: qr-code-generator
-        build: .
-        ports:
-            - "0:3000" # 0 means Docker will assign a random host port to container port 3000
-        volumes:
-            - ./output:/app/output
-            - ./uploads:/app/uploads
-        restart: unless-stopped
+  qr-code-generator:
+    build: .
+    container_name: qr-code-generator
+    ports:
+      - "49155:3000"   # Map host port to container port
+    volumes:
+      - qr-output:/app/output
+    restart: unless-stopped
+
+volumes:
+  qr-output:
