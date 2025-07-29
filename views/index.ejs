@@ -41,6 +41,12 @@
         value="300"
         step="50"
       />
+
+      <label for="foregroundColor">Foreground Colour:</label>
+      <input type="color" id="foregroundColor" value="#000000" />
+
+      <label for="backgroundColor">Background Colour:</label>
+      <input type="color" id="backgroundColor" value="#ffffff" />
     </section>
 
     <form
@@ -98,16 +104,13 @@
       const loadGallery = async () => {
         const gallery = document.getElementById("gallery");
         gallery.innerHTML = "Loading...";
-
         try {
           const res = await fetch("/gallery");
           const files = await res.json();
-
           if (files.length === 0) {
             gallery.innerHTML = "<p>No QR codes yet.</p>";
             return;
           }
-
           gallery.innerHTML = files
             .map(
               (file) => `
@@ -118,7 +121,7 @@
         `
             )
             .join("");
-        } catch (err) {
+        } catch {
           gallery.innerHTML = "<p>Error loading gallery.</p>";
         }
       };
@@ -133,6 +136,14 @@
           formData.append(
             "width",
             document.getElementById("sharedWidth").value
+          );
+          formData.append(
+            "colorDark",
+            document.getElementById("foregroundColor").value
+          );
+          formData.append(
+            "colorLight",
+            document.getElementById("backgroundColor").value
           );
 
           const response = await fetch("/upload", {
@@ -158,6 +169,14 @@
             "width",
             document.getElementById("sharedWidth").value
           );
+          formData.append(
+            "colorDark",
+            document.getElementById("foregroundColor").value
+          );
+          formData.append(
+            "colorLight",
+            document.getElementById("backgroundColor").value
+          );
 
           const response = await fetch("/generate", {
             method: "POST",
@@ -176,10 +195,8 @@
           }
         });
 
-      const widthSlider = document.getElementById("sharedWidth");
-      const widthValue = document.getElementById("widthValue");
-      widthSlider.addEventListener("input", () => {
-        widthValue.textContent = widthSlider.value;
+      document.getElementById("sharedWidth").addEventListener("input", (e) => {
+        document.getElementById("widthValue").textContent = e.target.value;
       });
     </script>
   </body>
