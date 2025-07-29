@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QR Code Generator</title>
+    <style>
+      .toast {
+        visibility: hidden;
+        min-width: 250px;
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        border-radius: 8px;
+        padding: 16px;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        transition: opacity 0.4s ease-in-out;
+      }
+
+      .toast.show {
+        visibility: visible;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Upload CSV or Enter a Single URL</h1>
+
+    <section style="max-width: 400px; margin-bottom: 32px">
+      <h3>QR Code Styling</h3>
+      <label for="sharedWidth"
+        >QR Width: <span id="widthValue">300</span> px</label
+      >
+      <input
+        type="range"
+        name="sharedWidth"
+        id="sharedWidth"
+        min="100"
+        max="600"
+        value="300"
+        step="50"
+      />
+    </section>
+
+    <form
+      id="csvForm"
+      enctype="multipart/form-data"
+      style="
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-width: 400px;
+        margin-bottom: 32px;
+      "
+    >
+      <input type="file" name="csvFile" accept=".csv" required />
+      <button type="submit">Upload CSV</button>
+    </form>
+
+    <hr />
+
+    <form id="singleForm">
+      <input type="text" name="url" placeholder="Enter URL" required />
+      <input
+        type="text"
+        name="filename"
+        placeholder="Enter filename"
+        required
+      />
+      <select name="format">
+        <option value="png">PNG</option>
+        <option value="svg">SVG</option>
+      </select>
+      <button type="submit">Generate</button>
+    </form>
+
+    <h2>QR Code Gallery</h2>
+    <div
+      id="gallery"
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+      "
+    ></div>
+
+    <div class="toast" id="toast">Success!</div>
+
+    <script>
+      const showToast = (message) => {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
+      };
+
+      const loadGallery = async () => {
+        const gallery = document.getElementById("gallery");
+        gallery.innerHTML = "Loading...";
+
+        try {
+          const res = await fetch("/gallery");
+          const files = await res.json();
+
+          if (files.length === 0) {
+            gallery.innerHTML = "<p>No QR codes yet.</p>";
+            return;
+          }
+
+          gallery.innerHTML = files
+            .map(
+              (file) => `
+          <div style="text-align: center;">
+            <img src="/output/${file}" alt="${file}" style="width: 100%; max-width: 150px; height: auto; border: 1px solid #ccc; border-radius: 8px;">
+            <p style="font-size: 0.8rem;">${file}</p>
+          </div>
+        `
+            )
+            .join("");
+        } catch (err) {
+          gallery.innerHTML = "<p>Error loading gallery.</p>";
+        }
+      };
+
+      loadGallery();
+
+      document
+        .getElementById("csvForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          formData.append(
+            "width",
+            document.getElementById("sharedWidth").value
+          );
+
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            showToast("QR codes generated and saved to output folder.");
+            e.target.reset();
+            loadGallery();
+          } else {
+            showToast("Upload failed.");
+          }
+        });
+
+      document
+        .getElementById("singleForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new URLSearchParams(new FormData(e.target));
+          formData.append(
+            "width",
+            document.getElementById("sharedWidth").value
+          );
+
+          const response = await fetch("/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: formData,
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            showToast("QR code generated. Download starting...");
+            window.location.href = `/output/${result.download}`;
+            e.target.reset();
+            loadGallery();
+          } else {
+            showToast("Generation failed.");
+          }
+        });
+
+      const widthSlider = document.getElementById("sharedWidth");
+      const widthValue = document.getElementById("widthValue");
+      widthSlider.addEventListener("input", () => {
+        widthValue.textContent = widthSlider.value;
+      });
+    </script>
+  </body>
+</html>
