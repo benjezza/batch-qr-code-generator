@@ -1,0 +1,129 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# === Compiled Output ===
+/dist
+/tmp
+/out-tsc
+**/sw.js
+build/
+out
+
+# === Dependencies ===
+/node_modules
+jspm_packages/
+bower_components/
+web_modules/
+
+# === IDEs and Editors ===
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.vscode-test
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+testem.log
+
+# === Runtime & Cache ===
+pids
+*.pid
+*.seed
+*.pid.lock
+.cache
+.parcel-cache
+.nyc_output
+.eslintcache
+.stylelintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.node_repl_history
+*.tsbuildinfo
+.npm
+*.tgz
+
+# === Diagnostic Reports ===
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# === Coverage ===
+coverage
+*.lcov
+
+# === Misc ===
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+/typings
+.lock-wscript
+lib-cov
+.grunt
+
+# === Output of Static Site Generators / Frameworks ===
+.next
+.nuxt
+.vuepress/dist
+.vuepress
+.temp
+.docusaurus
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.webpack/
+.svelte-kit
+
+# === Yarn 2 ===
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.yarn-integrity
+.pnp.*
+
+# === Amplify (do not edit section) ===
+#amplify-do-not-edit-begin
+amplify/#current-cloud-backend
+amplify/.config/local-*
+amplify/logs
+amplify/mock-data
+amplify/backend/amplify-meta.json
+amplify/backend/.temp
+aws-exports.js
+awsconfiguration.json
+amplifyconfiguration.json
+amplifyconfiguration.dart
+amplify-build-config.json
+amplify-gradle-config.json
+amplifytools.xcconfig
+.secret-*
+**.sample
+#amplify-do-not-edit-end
+
+# === Graphic Files ===
+*.psd
+
+# === Optional .env files ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
