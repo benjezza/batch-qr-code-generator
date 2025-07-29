@@ -102,4 +102,24 @@ app.get('/gallery', (req, res) => {
   });
 });
 
+app.post('/clear-output', (req, res) => {
+  const dirPath = path.join(__dirname, 'output');
+
+  fs.readdir(dirPath, (err, files) => {
+    if (err) {
+      console.error('Error reading output folder:', err);
+      return res.status(500).json({ success: false, message: 'Failed to read output folder.' });
+    }
+
+    for (const file of files) {
+      fs.unlink(path.join(dirPath, file), err => {
+        if (err) console.error(`Failed to delete ${file}:`, err);
+      });
+    }
+
+    res.json({ success: true, message: 'Output folder cleared.' });
+  });
+});
+
+
 app.listen(PORT, () => console.log(`✅ QR Generator running on http://localhost:${PORT}`));
